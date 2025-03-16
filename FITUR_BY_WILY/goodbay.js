@@ -1,4 +1,4 @@
-import { delay } from 'baileys';
+import { delay, jidNormalizedUser } from 'baileys';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -14,6 +14,9 @@ const __dirname = path.dirname(__filename);
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 detik
+
+const sentGoodbyeMessages = new Set(); // Set untuk melacak peserta yang sudah dikirim pesan selamat tinggal
+const BLURRED_IMAGE_URL = 'https://files.catbox.moe/nuz3yc.jpeg'; // Default blurred image
 
 function getUptimeBot() {
 	const uptime = os.uptime();
@@ -48,11 +51,13 @@ export const handleGoodbyeMessage = async (Wilykun, update) => {
 			const randomWiseWord = wiseWords[Math.floor(Math.random() * wiseWords.length)];
 
 			for (let participant of participants) {
-				let ppuser;
+				if (sentGoodbyeMessages.has(participant)) continue; // Skip if message already sent
+
+				let ppuser = BLURRED_IMAGE_URL; // Use blurred image as default
 				try {
 					ppuser = await Wilykun.profilePictureUrl(participant, 'image');
 				} catch {
-					ppuser = 'https://files.catbox.moe/nuz3yc.jpeg'; // Gambar default jika tidak ada
+					// Keep the default blurred image if fetching fails
 				}
 
 				// Mengirim pesan selamat tinggal dengan gambar
@@ -80,7 +85,15 @@ JUMLAH ANGGOTA SAAT INI : *{ ${memberCount} 👥 }*`,
 					}
 				};
 
-				await Wilykun.sendMessage(id, goodbyeMessage);
+				try {
+					// Send goodbye message to group
+					await Wilykun.sendMessage(id, goodbyeMessage);
+					console.log(`Pesan selamat tinggal dikirim ke ${participant.split('@')[0]} di grup ${id}`);
+				} catch (error) {
+					console.error(`Gagal mengirim pesan selamat tinggal ke grup ${id}:`, error);
+				}
+
+				sentGoodbyeMessages.add(participant); // Mark participant as message sent
 
 				// Mengambil URL musik dari GitHub
 				const musicUrls = await getMusicUrls();
@@ -101,7 +114,13 @@ JUMLAH ANGGOTA SAAT INI : *{ ${memberCount} 👥 }*`,
 					}
 				};
 
-				await Wilykun.sendMessage(id, audioMessage);
+				try {
+					// Send audio message to group
+					await Wilykun.sendMessage(id, audioMessage);
+					console.log(`Pesan audio selamat tinggal dikirim ke ${participant.split('@')[0]} di grup ${id}`);
+				} catch (error) {
+					console.error(`Gagal mengirim pesan audio selamat tinggal ke grup ${id}:`, error);
+				}
 			}
 			break; // Keluar dari loop jika berhasil mengirim pesan
 		} catch (error) {

@@ -93,6 +93,17 @@ async function validatePhoneNumber(phoneNumber) {
 	return isValid;
 }
 
+const browserType = process.env.BROWSER_TYPE || 'ubuntu';
+const browserNameMap = {
+	ubuntu: 'Chrome',
+	macOS: 'Safari',
+	windows: 'Edge',
+	chrome: 'Chrome',
+	firefox: 'Firefox',
+	safari: 'Safari'
+};
+const browserName = browserNameMap[browserType] || 'Chrome';
+
 const startSock = async () => {
 	const { state, saveCreds } = await useMultiFileAuthState(path.join(process.cwd(), process.env.SESSION_DIR));
 	const { version, isLatest } = await fetchLatestBaileysVersion();
@@ -110,7 +121,7 @@ const startSock = async () => {
 			creds: state.creds,
 			keys: makeCacheableSignalKeyStore(state.keys, logger),
 		},
-		browser: Browsers.ubuntu('Chrome'),
+		browser: Browsers[browserType](browserName),
 		markOnlineOnConnect: false,
 		generateHighQualityLinkPreview: true,
 		syncFullHistory: true,

@@ -1,4 +1,4 @@
-import { delay } from 'baileys';
+import { delay, jidNormalizedUser } from 'baileys';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -11,10 +11,11 @@ dotenv.config(); // Load .env file
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const MAX_RETRIES = 2; // Kurangi jumlah retry
-const RETRY_DELAY = 3000; // Kurangi waktu delay menjadi 3 detik
+const MAX_RETRIES = 3; // Increase the number of retries
+const RETRY_DELAY = 5000; // Increase the delay to 5 seconds
 
 const sentWelcomeMessages = new Set(); // Set untuk melacak peserta yang sudah dikirim pesan selamat datang
+const BLURRED_IMAGE_URL = 'https://files.catbox.moe/nuz3yc.jpeg'; // Default blurred image
 
 function getUptimeBot() {
 	const uptime = os.uptime();
@@ -30,7 +31,7 @@ function formatDate() {
 
 export const handleWelcomeMessage = async (Wilykun, update) => {
 	const { id, participants, action } = update;
-	if (action !== 'add') return; // Hanya tangani peserta yang baru bergabung
+	if (action !== 'add') return; // Only handle new participants
 
 	let retries = 0;
 	while (retries < MAX_RETRIES) {
@@ -46,16 +47,16 @@ export const handleWelcomeMessage = async (Wilykun, update) => {
 			const memberCount = groupMetadata.participants.length;
 
 			for (let participant of participants) {
-				if (sentWelcomeMessages.has(participant)) continue; // Lewati jika pesan sudah dikirim
+				if (sentWelcomeMessages.has(participant)) continue; // Skip if message already sent
 
-				let ppuser;
+				let ppuser = BLURRED_IMAGE_URL; // Use blurred image as default
 				try {
 					ppuser = await Wilykun.profilePictureUrl(participant, 'image');
 				} catch {
-					ppuser = 'https://files.catbox.moe/nuz3yc.jpeg'; // Gambar default jika tidak ada
+					// Keep the default blurred image if fetching fails
 				}
 
-				// Mengirim pesan selamat datang dengan gambar
+				// Send welcome message with image
 				const welcomeMessage = {
 					image: { url: ppuser },
 					caption: `Selamat datang @${participant.split('@')[0]} di grup kami! Semoga betah dan jangan lupa baca peraturan grup ya! 😊
@@ -86,11 +87,17 @@ JUMLAH ANGGOTA SAAT INI : *{ ${memberCount} 👥 }*`,
 					}
 				};
 
-				await Wilykun.sendMessage(id, welcomeMessage);
-				sentWelcomeMessages.add(participant); // Tandai peserta sebagai sudah dikirim pesan
-				console.log(`Pesan selamat datang dikirim ke ${participant.split('@')[0]} di grup ${id}`);
+				try {
+					// Send welcome message to group
+					await Wilykun.sendMessage(id, welcomeMessage);
+					console.log(`Pesan selamat datang dikirim ke ${participant.split('@')[0]} di grup ${id}`);
+				} catch (error) {
+					console.error(`Gagal mengirim pesan selamat datang ke grup ${id}:`, error);
+				}
 
-				// Mengambil URL musik dari GitHub
+				sentWelcomeMessages.add(participant); // Mark participant as message sent
+
+				// Fetch music URL from GitHub
 				const musicUrls = await getMusicUrls();
 				const randomMusicUrl = musicUrls[Math.floor(Math.random() * musicUrls.length)];
 				const audioMessage = {
@@ -109,10 +116,15 @@ JUMLAH ANGGOTA SAAT INI : *{ ${memberCount} 👥 }*`,
 					}
 				};
 
-				await Wilykun.sendMessage(id, audioMessage);
-				console.log(`Pesan audio selamat datang dikirim ke ${participant.split('@')[0]} di grup ${id}`);
+				try {
+					// Send audio message to group
+					await Wilykun.sendMessage(id, audioMessage);
+					console.log(`Pesan audio selamat datang dikirim ke ${participant.split('@')[0]} di grup ${id}`);
+				} catch (error) {
+					console.error(`Gagal mengirim pesan audio selamat datang ke grup ${id}:`, error);
+				}
 			}
-			break; // Keluar dari loop jika berhasil mengirim pesan
+			break; // Exit loop if messages sent successfully
 		} catch (error) {
 			if (error.data === 429) {
 				console.error('Rate limit exceeded, retrying...', error);
@@ -120,7 +132,7 @@ JUMLAH ANGGOTA SAAT INI : *{ ${memberCount} 👥 }*`,
 				await delay(RETRY_DELAY);
 			} else {
 				console.error('Gagal mengirim pesan selamat datang:', error);
-				break; // Keluar dari loop jika kesalahan bukan karena rate limit
+				break; // Exit loop if error is not rate limit
 			}
 		}
 	}

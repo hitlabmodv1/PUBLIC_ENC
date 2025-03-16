@@ -76,27 +76,27 @@ export async function sendConnectionMessage(Wilykun, m) {
 	const randomWiseWord = wiseWords[Math.floor(Math.random() * wiseWords.length)];
 
 	const features = {
-			'Anti Forwarded Newsletter': process.env.ENABLE_ANTI_FORWARDED_NEWSLETTER === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Anti WaMe Link': process.env.ENABLE_ANTI_WAME_LINK === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Auto Clear Session': process.env.AUTO_CLEAR_SESSION_ENABLED === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Auto Kick': process.env.AUTO_KICK_ENABLED === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Auto Online/Auto Read Pesan': process.env.AUTO_ONLINE_AUTO_READ_PESAN === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Auto Recording': process.env.ENABLE_RECORDING === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Auto Typing': process.env.ENABLE_TYPING === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Goodbye Message': process.env.ENABLE_GOODBYE_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Handle Errors': process.env.HANDLE_ERRORS === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Self Mode': process.env.SELF === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Welcome Message': process.env.ENABLE_WELCOME_MESSAGE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌',
-			'Write Store': process.env.WRITE_STORE === 'true' ? 'Aktif ✅' : 'Tidak Aktif ❌'
-		};
+		'📰 Anti Forwarded Newsletter': process.env.ENABLE_ANTI_FORWARDED_NEWSLETTER === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'🔗 Anti WaMe Link': process.env.ENABLE_ANTI_WAME_LINK === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'🧹 Auto Clear Session': process.env.AUTO_CLEAR_SESSION_ENABLED === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'👢 Auto Kick': process.env.AUTO_KICK_ENABLED === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'📶 Auto Online': process.env.AUTO_ONLINE_AUTO_READ_PESAN === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'🎥 Auto Recording': process.env.ENABLE_RECORDING === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'⌨️ Auto Typing': process.env.ENABLE_TYPING === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'👋 Goodbye Message': process.env.ENABLE_GOODBYE_MESSAGE === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'⚠️ Handle Errors': process.env.HANDLE_ERRORS === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'🔒 Self Mode': process.env.SELF === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'👋 Welcome Message': process.env.ENABLE_WELCOME_MESSAGE === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'💾 Write Store': process.env.WRITE_STORE === 'true' ? 'Aktif' : 'Tidak Aktif'
+	};
 
 	const activeFeatures = Object.entries(features)
-		.filter(([_, status]) => status === 'Aktif ✅')
+		.filter(([_, status]) => status === 'Aktif')
 		.map(([name, status]) => `- ${name}: ${status}`)
 		.join('\n');
 
 	const inactiveFeatures = Object.entries(features)
-		.filter(([_, status]) => status === 'Tidak Aktif ❌')
+		.filter(([_, status]) => status === 'Tidak Aktif')
 		.map(([name, status]) => `- ${name}: ${status}`)
 		.join('\n');
 
@@ -134,10 +134,10 @@ Total Fitur Saat ini: *{ ${totalFeatures} 🛠️ }*
 Jumlah Fitur Aktif: *{ ${activeFeatureCount} ✅ }* 
 Jumlah Fitur Tidak Aktif: *{ ${inactiveFeatureCount} ❌ }* 
 ─
-Fitur Aktif (${activeFeatureCount}):
+Fitur Aktif (${activeFeatureCount} ✅):
 ${activeFeatures}
 ─
-Fitur Tidak Aktif (${inactiveFeatureCount}):
+Fitur Tidak Aktif (${inactiveFeatureCount} ❌):
 ${inactiveFeatures}
 ─
 Script Auto Read Story, Reaksi Emot Random, saat ini sedang dipantau oleh Owner untuk menjaga hal yang kita tidak diinginkan. 👁️
