@@ -9,33 +9,39 @@ Tinggal `npm install` terus `npm start`
 ## Fitur
 
 <details>
-  <summary>🚀 Uptime 24/7</summary>
-  Bot akan tetap online sepanjang waktu tanpa henti.
+  <summary><span style="animation: color-change 2s infinite;">🚀 Uptime 24/7</span></summary>
+  <img src="https://via.placeholder.com/150" alt="Uptime 24/7">
+  <p>Bot akan tetap online sepanjang waktu tanpa henti.</p>
 </details>
 
 <details>
-  <summary>🔒 Keamanan Terjamin</summary>
-  Data dan informasi Anda aman dengan enkripsi tingkat tinggi.
+  <summary><span style="animation: color-change 2s infinite;">🔒 Keamanan Terjamin</span></summary>
+  <img src="https://via.placeholder.com/150" alt="Keamanan Terjamin">
+  <p>Data dan informasi Anda aman dengan enkripsi tingkat tinggi.</p>
 </details>
 
 <details>
-  <summary>⚙️ Mudah Dikustomisasi</summary>
-  Sesuaikan bot sesuai kebutuhan Anda dengan konfigurasi yang fleksibel.
+  <summary><span style="animation: color-change 2s infinite;">⚙️ Mudah Dikustomisasi</span></summary>
+  <img src="https://via.placeholder.com/150" alt="Mudah Dikustomisasi">
+  <p>Sesuaikan bot sesuai kebutuhan Anda dengan konfigurasi yang fleksibel.</p>
 </details>
 
 <details>
-  <summary>📊 Monitoring Penggunaan RAM</summary>
-  Pantau penggunaan RAM secara real-time untuk performa optimal.
+  <summary><span style="animation: color-change 2s infinite;">📊 Monitoring Penggunaan RAM</span></summary>
+  <img src="https://via.placeholder.com/150" alt="Monitoring Penggunaan RAM">
+  <p>Pantau penggunaan RAM secara real-time untuk performa optimal.</p>
 </details>
 
 <details>
-  <summary>🌐 Dukungan Multi-Bahasa</summary>
-  Bot mendukung berbagai bahasa untuk kemudahan penggunaan.
+  <summary><span style="animation: color-change 2s infinite;">🌐 Dukungan Multi-Bahasa</span></summary>
+  <img src="https://via.placeholder.com/150" alt="Dukungan Multi-Bahasa">
+  <p>Bot mendukung berbagai bahasa untuk kemudahan penggunaan.</p>
 </details>
 
 <details>
-  <summary>🔧 Konfigurasi Melalui .env</summary>
-  Semua pengaturan bot dapat dikonfigurasi melalui file `.env` untuk kemudahan dan fleksibilitas.
+  <summary><span style="animation: color-change 2s infinite;">🔧 Konfigurasi Melalui .env</span></summary>
+  <img src="https://via.placeholder.com/150" alt="Konfigurasi Melalui .env">
+  <p>Semua pengaturan bot dapat dikonfigurasi melalui file `.env` untuk kemudahan dan fleksibilitas.</p>
 </details>
 
 ---
@@ -54,3 +60,13 @@ Tinggal `npm install` terus `npm start`
 ## Hosting
 
 Jika kamu ingin menjalankan bot dengan uptime 24/7 tanpa perlu mengkhawatirkan server, bisa kunjungi halaman berikut [Wilykun](https://Wilykun.net)
+
+<style>
+@keyframes color-change {
+  0% { color: red; }
+  25% { color: orange; }
+  50% { color: yellow; }
+  75% { color: green; }
+  100% { color: blue; }
+}
+</style>
