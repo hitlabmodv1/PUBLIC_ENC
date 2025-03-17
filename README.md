@@ -33,6 +33,11 @@ Tinggal `npm install` terus `npm start`
   Bot mendukung berbagai bahasa untuk kemudahan penggunaan.
 </details>
 
+<details>
+  <summary>🔧 Konfigurasi Melalui .env</summary>
+  Semua pengaturan bot dapat dikonfigurasi melalui file `.env` untuk kemudahan dan fleksibilitas.
+</details>
+
 ---
 
 ## Info
