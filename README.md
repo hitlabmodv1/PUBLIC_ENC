@@ -4,6 +4,37 @@ Bot hosting yang siap digunakan dan uptime 24 jam penuh, hanya memerlukan nomor 
 
 Tinggal `npm install` terus `npm start`
 
+---
+
+## Fitur
+
+<details>
+  <summary>🚀 Uptime 24/7</summary>
+  Bot akan tetap online sepanjang waktu tanpa henti.
+</details>
+
+<details>
+  <summary>🔒 Keamanan Terjamin</summary>
+  Data dan informasi Anda aman dengan enkripsi tingkat tinggi.
+</details>
+
+<details>
+  <summary>⚙️ Mudah Dikustomisasi</summary>
+  Sesuaikan bot sesuai kebutuhan Anda dengan konfigurasi yang fleksibel.
+</details>
+
+<details>
+  <summary>📊 Monitoring Penggunaan RAM</summary>
+  Pantau penggunaan RAM secara real-time untuk performa optimal.
+</details>
+
+<details>
+  <summary>🌐 Dukungan Multi-Bahasa</summary>
+  Bot mendukung berbagai bahasa untuk kemudahan penggunaan.
+</details>
+
+---
+
 ## Info
 
 <details>
@@ -12,6 +43,8 @@ Tinggal `npm install` terus `npm start`
 
   Untuk mengurangi penggunaan RAM bisa dimatikan write store di `.env`
 </details>
+
+---
 
 ## Hosting
 
