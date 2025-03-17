@@ -10,37 +10,37 @@ Tinggal `npm install` terus `npm start`
 
 <details>
   <summary><span style="animation: color-change 2s infinite;">🚀 Uptime 24/7</span></summary>
-  <img src="https://w0.uhdpaper.com/wallpaper/3840x2160/1/100/anime-girl-4k-100-wallpaper.jpg" alt="Uptime 24/7">
+  <img src="https://via.placeholder.com/150" alt="Uptime 24/7">
   <p>Bot akan tetap online sepanjang waktu tanpa henti.</p>
 </details>
 
 <details>
   <summary><span style="animation: color-change 2s infinite;">🔒 Keamanan Terjamin</span></summary>
-  <img src="https://w0.uhdpaper.com/wallpaper/3840x2160/1/100/anime-girl-4k-100-wallpaper.jpg" alt="Keamanan Terjamin">
+  <img src="https://via.placeholder.com/150" alt="Keamanan Terjamin">
   <p>Data dan informasi Anda aman dengan enkripsi tingkat tinggi.</p>
 </details>
 
 <details>
   <summary><span style="animation: color-change 2s infinite;">⚙️ Mudah Dikustomisasi</span></summary>
-  <img src="https://w0.uhdpaper.com/wallpaper/3840x2160/1/100/anime-girl-4k-100-wallpaper.jpg" alt="Mudah Dikustomisasi">
+  <img src="https://via.placeholder.com/150" alt="Mudah Dikustomisasi">
   <p>Sesuaikan bot sesuai kebutuhan Anda dengan konfigurasi yang fleksibel.</p>
 </details>
 
 <details>
   <summary><span style="animation: color-change 2s infinite;">📊 Monitoring Penggunaan RAM</span></summary>
-  <img src="https://w0.uhdpaper.com/wallpaper/3840x2160/1/100/anime-girl-4k-100-wallpaper.jpg" alt="Monitoring Penggunaan RAM">
+  <img src="https://via.placeholder.com/150" alt="Monitoring Penggunaan RAM">
   <p>Pantau penggunaan RAM secara real-time untuk performa optimal.</p>
 </details>
 
 <details>
   <summary><span style="animation: color-change 2s infinite;">🌐 Dukungan Multi-Bahasa</span></summary>
-  <img src="https://w0.uhdpaper.com/wallpaper/3840x2160/1/100/anime-girl-4k-100-wallpaper.jpg" alt="Dukungan Multi-Bahasa">
+  <img src="https://via.placeholder.com/150" alt="Dukungan Multi-Bahasa">
   <p>Bot mendukung berbagai bahasa untuk kemudahan penggunaan.</p>
 </details>
 
 <details>
   <summary><span style="animation: color-change 2s infinite;">🔧 Konfigurasi Melalui .env</span></summary>
-  <img src="https://w0.uhdpaper.com/wallpaper/3840x2160/1/100/anime-girl-4k-100-wallpaper.jpg" alt="Konfigurasi Melalui .env">
+  <img src="https://via.placeholder.com/150" alt="Konfigurasi Melalui .env">
   <p>Semua pengaturan bot dapat dikonfigurasi melalui file `.env` untuk kemudahan dan fleksibilitas.</p>
 </details>
 
