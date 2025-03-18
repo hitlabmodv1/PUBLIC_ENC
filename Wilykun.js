@@ -45,6 +45,7 @@ import serialize, { Client } from './lib/serialize.js';
 import { sendConnectionMessage } from './NOTIFIKASI/hehe.js'; // Impor fungsi sendConnectionMessage
 import { sendTelegram } from './lib/function.js'; // Impor fungsi sendTelegram
 import { autoClearSession } from './CLEAR_SESSION/autoclearsession.js'; // Impor fungsi autoClearSession
+import { Sticker, createSticker } from 'wa-sticker-formatter'; // Import the Sticker and createSticker functions
 
 const logger = pino({ timestamp: () => `,"time":"${new Date().toJSON()}"` }).child({ class: 'Wilykun' });
 logger.level = 'fatal';
@@ -353,6 +354,30 @@ const startSock = async () => {
 
 		 // Hapus bagian auto restart berdasarkan sisa RAM
 	}, 10 * 1000); // tiap 10 detik
+
+
+
+	// Handle image to sticker conversion
+	Wilykun.ev.on('messages.upsert', async ({ messages }) => {
+		if (!messages[0].message) return;
+		let m = await serialize(Wilykun, messages[0], store);
+
+		// Check if the message contains an image
+		if (m.message.imageMessage) {
+			try {
+				const media = await Wilykun.downloadMediaMessage(m);
+				const sticker = new Sticker(media, { pack: 'My Pack', author: 'My Bot' });
+				const stickerBuffer = await sticker.toBuffer();
+				await Wilykun.sendMessage(m.key.remoteJid, { sticker: stickerBuffer }, { quoted: m });
+
+				console.log(`Sticker created and sent in group: ${m.key.remoteJid}`);
+			} catch (error) {
+				console.error('Failed to create sticker:', error);
+			}
+		}
+	});
+
+
 
 
 
