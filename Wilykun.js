@@ -35,6 +35,7 @@ import { handleGroupChat } from './FITUR_BY_WILY/buka_tutup_gc.js'; // Impor fun
 import { handlePrivateWelcomeMessage } from './FITUR_BY_WILY/welcometopribadi.js'; // Impor fungsi handlePrivateWelcomeMessage
 import { handlePrivateGoodbyeMessage } from './FITUR_BY_WILY/goodbaytopribadi.js'; // Impor fungsi handlePrivateGoodbyeMessage
 import { handleAntiAdmin } from './FITUR_BY_WILY/antiadmin_kecuali_owner_gc.js'; // Impor fungsi handleAntiAdmin
+import { handleOwnerWelcomeMessage } from './FITUR_BY_WILY/FITUR_SAMBUTAN_PEMILIK_GROUP/SambutanOwner.js'; // Import the new function
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -64,6 +65,8 @@ const enableWelcomeMessage = process.env.ENABLE_WELCOME_MESSAGE === 'true';
 const enableGoodbyeMessage = process.env.ENABLE_GOODBYE_MESSAGE === 'true';
 const enableAntiChannelLink = process.env.ENABLE_ANTI_CHANNEL_LINK === 'true';
 const enableAntiGroupLink = process.env.ENABLE_ANTI_GROUP_LINK === 'true';
+const enableOwnerWelcomeMessage = process.env.ENABLE_OWNER_WELCOME_MESSAGE === 'true';
+const ownerWelcomeMessageDelay = parseInt(process.env.OWNER_WELCOME_MESSAGE_DELAY, 10) || 600000;
 
 // Jalankan saat panel start jika diaktifkan
 if (process.env.AUTO_CLEAR_SESSION_ENABLED === 'true') {
@@ -206,6 +209,12 @@ const startSock = async () => {
 			if (statusCode !== 515) {
 				console.log('Connection closed due to', error, ', reconnecting', shouldReconnect);
 			}
+			// Handle WebSocket errors
+			if (error?.message?.includes('WebSocket Error')) {
+				console.log('WebSocket error detected:', error.message);
+				setTimeout(() => startSock(), 5000); // Restart after 5 seconds
+				return;
+			}
 			// Coba untuk memulai ulang socket jika tidak logout atau otentikasi gagal
 			if (shouldReconnect) {
 				startSock();
@@ -326,10 +335,12 @@ const startSock = async () => {
 
 		// kanggo kes
 		await (await import(`./message.js?v=${Date.now()}`)).default(Wilykun, store, m);
-	});
 
-	Wilykun.ev.on('messages.upsert', async ({ messages }) => {
-		await handleGroupChat(Wilykun, store, messages); // Pindahkan penanganan ke handleGroupChat
+		// Handle group chat
+		await handleGroupChat(Wilykun, store, messages);
+
+		// Handle welcome message for group owner
+		await handleOwnerWelcomeMessage(Wilykun, store, messages);
 	});
 
 	setInterval(async () => {
@@ -342,6 +353,26 @@ const startSock = async () => {
 
 		 // Hapus bagian auto restart berdasarkan sisa RAM
 	}, 10 * 1000); // tiap 10 detik
+
+
+
+	// Handle welcome message for group owner
+	let lastOwnerMessageTime = {};
+
+	Wilykun.ev.on('messages.upsert', async ({ messages }) => {
+		if (!messages[0].message) return;
+		let m = await serialize(Wilykun, messages[0], store);
+
+		// Ensure group metadata is available
+		if (!store.groupMetadata[m.key.remoteJid]) {
+			store.groupMetadata[m.key.remoteJid] = await Wilykun.groupMetadata(m.key.remoteJid);
+		}
+
+		// Call handleOwnerWelcomeMessage function if enabled
+		if (enableOwnerWelcomeMessage) {
+			await handleOwnerWelcomeMessage(Wilykun, store, messages, ownerWelcomeMessageDelay);
+		}
+	});
 
 	if (process.env.HANDLE_ERRORS === 'true') {
 		process.on('uncaughtException', function (err) {
