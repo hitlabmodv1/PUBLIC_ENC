@@ -42,27 +42,7 @@ function getUptimeBot() {
  */
 export async function sendConnectionMessage(Wilykun, m) {
 	const imageUrls = await getImageUrls();
-	let randomImage;
-	let imageFetchSuccess = false;
-
-	// Coba mengambil gambar dari URL sampai berhasil atau habis daftar URL
-	for (const imageUrl of imageUrls) {
-		try {
-			const response = await fetch(imageUrl);
-			if (response.ok) {
-				randomImage = imageUrl;
-				imageFetchSuccess = true;
-				break;
-			}
-		} catch (error) {
-			console.error(`Gagal mengambil gambar dari URL: ${imageUrl}`, error);
-		}
-	}
-
-	if (!imageFetchSuccess) {
-		console.error('Gagal mengambil gambar dari semua URL yang tersedia.');
-		return;
-	}
+	const randomImage = imageUrls[Math.floor(Math.random() * imageUrls.length)];
 
 	const currentDate = new Date();
 	const formattedDate = currentDate.toLocaleDateString('id-ID', {

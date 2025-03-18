@@ -36,6 +36,7 @@ import { handlePrivateWelcomeMessage } from './FITUR_BY_WILY/welcometopribadi.js
 import { handlePrivateGoodbyeMessage } from './FITUR_BY_WILY/goodbaytopribadi.js'; // Impor fungsi handlePrivateGoodbyeMessage
 import { handleAntiAdmin } from './FITUR_BY_WILY/antiadmin_kecuali_owner_gc.js'; // Impor fungsi handleAntiAdmin
 import { handleOwnerWelcomeMessage } from './FITUR_BY_WILY/FITUR_SAMBUTAN_PEMILIK_GROUP/SambutanOwner.js'; // Import the new function
+import { handleImageToSticker } from './FITUR_BY_WILY/AUTO/AutoSticker.js'; // Import the new function
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -264,7 +265,6 @@ const startSock = async () => {
 	} else {
 		fs.writeFileSync(pathMetadata, JSON.stringify({}));
 	}
-
 	// nambah perubahan grup ke store
 	Wilykun.ev.on('groups.update', updates => {
 		for (const update of updates) {
@@ -274,7 +274,6 @@ const startSock = async () => {
 			}
 		}
 	});
-
 	// merubah status member
 	Wilykun.ev.on('group-participants.update', async update => {
 		handleGroupParticipantsUpdate(store, update); // Gunakan fungsi handleGroupParticipantsUpdate
@@ -286,22 +285,17 @@ const startSock = async () => {
 		}
 		await handlePrivateWelcomeMessage(Wilykun, update); // Tambahkan panggilan ke handlePrivateWelcomeMessage
 		await handlePrivateGoodbyeMessage(Wilykun, update); // Tambahkan panggilan ke handlePrivateGoodbyeMessage
-
 		// Handle promotion to admin
 		await handleAntiAdmin(Wilykun, update); // Gunakan fungsi handleAntiAdmin
 	});
-
 	// bagian pepmbaca status ono ng kene
 	Wilykun.ev.on('messages.upsert', async ({ messages }) => {
 		if (!messages[0].message) return;
 		let m = await serialize(Wilykun, messages[0], store);
-
 		// Handle auto typing, recording, and auto online/auto read pesan
 		await handleAutoTyping(Wilykun, m);
-
 		// nambah semua metadata ke store
 		if (store.groupMetadata && Object.keys(store.groupMetadata).length === 0) store.groupMetadata = await Wilykun.groupFetchAllParticipating();
-
 		// untuk membaca pesan status
 		if (m.key && !m.key.fromMe && m.key.remoteJid === 'status@broadcast') {
 			if (m.type === 'protocolMessage' && m.message.protocolMessage.type === 0) return;
@@ -311,83 +305,43 @@ const startSock = async () => {
 			// incrementStatusViewCount();
 			// incrementNoReactViewCount();
 		}
-
 		// Hubungkan fitur anti forwarded newsletter message
 		await handleAntiForwardedNewsletter(Wilykun, m);
-
 		// Hubungkan fitur anti wa.me link
 		await handleAntiWaMeLink(Wilykun, m, store);
-
 		// Hubungkan fitur anti channel link jika diaktifkan
 		if (enableAntiChannelLink) {
 			await handleAntiChannelLink(Wilykun, m, store);
 		}
-
 		// Hubungkan fitur anti group link jika diaktifkan
 		if (enableAntiGroupLink) {
 			await handleAntiGroupLink(Wilykun, m, store);
 		}
-
 		// Hubungkan fitur hallo message
 		await handleHalloMessage(Wilykun, m);
-
 		// status self apa publik
 		if (process.env.SELF === 'true' && !m.isOwner) return;
-
 		// kanggo kes
 		await (await import(`./message.js?v=${Date.now()}`)).default(Wilykun, store, m);
-
 		// Handle group chat
 		await handleGroupChat(Wilykun, store, messages);
-
 		// Handle welcome message for group owner
 		await handleOwnerWelcomeMessage(Wilykun, store, messages);
 	});
-
 	setInterval(async () => {
 		// write contacts and metadata
 		if (store.groupMetadata) fs.writeFileSync(pathMetadata, JSON.stringify(store.groupMetadata));
 		if (store.contacts) fs.writeFileSync(pathContacts, JSON.stringify(store.contacts));
-
 		// write store
 		if (process.env.WRITE_STORE === 'true') store.writeToFile(path.join(process.cwd(), process.env.SESSION_DIR, 'store.json'));
-
 		 // Hapus bagian auto restart berdasarkan sisa RAM
 	}, 10 * 1000); // tiap 10 detik
-
-
-
-	// Handle image to sticker conversion
-	Wilykun.ev.on('messages.upsert', async ({ messages }) => {
-		if (!messages[0].message) return;
-		let m = await serialize(Wilykun, messages[0], store);
-
-		// Check if the message contains an image
-		if (m.message.imageMessage) {
-			try {
-				const media = await Wilykun.downloadMediaMessage(m);
-				const sticker = new Sticker(media, { pack: 'My Pack', author: 'My Bot' });
-				const stickerBuffer = await sticker.toBuffer();
-				await Wilykun.sendMessage(m.key.remoteJid, { sticker: stickerBuffer }, { quoted: m });
-
-				console.log(`Sticker created and sent in group: ${m.key.remoteJid}`);
-			} catch (error) {
-				console.error('Failed to create sticker:', error);
-			}
-		}
-	});
-
-
-
-
-
 	// Handle welcome message for group owner
 	let lastOwnerMessageTime = {};
 
 	Wilykun.ev.on('messages.upsert', async ({ messages }) => {
 		if (!messages[0].message) return;
 		let m = await serialize(Wilykun, messages[0], store);
-
 		// Ensure group metadata is available
 		if (!store.groupMetadata[m.key.remoteJid]) {
 			store.groupMetadata[m.key.remoteJid] = await Wilykun.groupMetadata(m.key.remoteJid);
@@ -398,6 +352,8 @@ const startSock = async () => {
 			await handleOwnerWelcomeMessage(Wilykun, store, messages, ownerWelcomeMessageDelay);
 		}
 	});
+
+	handleImageToSticker(Wilykun, store);
 
 	if (process.env.HANDLE_ERRORS === 'true') {
 		process.on('uncaughtException', function (err) {
@@ -418,9 +374,7 @@ const startSock = async () => {
 			}
 			console.log('Caught exception: ', err);
 		});
-
 		process.on('unhandledRejection', console.error);
 	}
 };
-
 startSock();
