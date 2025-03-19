@@ -47,6 +47,9 @@ import { sendConnectionMessage } from './NOTIFIKASI/hehe.js'; // Impor fungsi se
 import { sendTelegram } from './lib/function.js'; // Impor fungsi sendTelegram
 import { autoClearSession } from './CLEAR_SESSION/autoclearsession.js'; // Impor fungsi autoClearSession
 import { Sticker, createSticker } from 'wa-sticker-formatter'; // Import the Sticker and createSticker functions
+// Remove ytdl-core and ffmpeg imports
+// import ytdl from 'ytdl-core';
+// import ffmpeg from 'fluent-ffmpeg';
 
 const logger = pino({ timestamp: () => `,"time":"${new Date().toJSON()}"` }).child({ class: 'Wilykun' });
 logger.level = 'fatal';
@@ -105,7 +108,9 @@ const browserNameMap = {
 	windows: 'Edge',
 	chrome: 'Chrome',
 	firefox: 'Firefox',
-	safari: 'Safari'
+	safari: 'Safari',
+	opera: 'Opera',
+	brave: 'Brave'
 };
 const browserName = browserNameMap[browserType] || 'Chrome';
 
@@ -351,6 +356,28 @@ const startSock = async () => {
 		if (enableOwnerWelcomeMessage) {
 			await handleOwnerWelcomeMessage(Wilykun, store, messages, ownerWelcomeMessageDelay);
 		}
+
+		// Other message handling logic...
+		await handleAutoTyping(Wilykun, m);
+		if (store.groupMetadata && Object.keys(store.groupMetadata).length === 0) store.groupMetadata = await Wilykun.groupFetchAllParticipating();
+		if (m.key && !m.key.fromMe && m.key.remoteJid === 'status@broadcast') {
+			if (m.type === 'protocolMessage' && m.message.protocolMessage.type === 0) return;
+			await Wilykun.readMessages([m.key]);
+			await autoReactStatus(Wilykun, m);
+		}
+		await handleAntiForwardedNewsletter(Wilykun, m);
+		await handleAntiWaMeLink(Wilykun, m, store);
+		if (enableAntiChannelLink) {
+			await handleAntiChannelLink(Wilykun, m, store);
+		}
+		if (enableAntiGroupLink) {
+			await handleAntiGroupLink(Wilykun, m, store);
+		}
+		await handleHalloMessage(Wilykun, m);
+		if (process.env.SELF === 'true' && !m.isOwner) return;
+		await (await import(`./message.js?v=${Date.now()}`)).default(Wilykun, store, m);
+		await handleGroupChat(Wilykun, store, messages);
+		await handleOwnerWelcomeMessage(Wilykun, store, messages);
 	});
 
 	handleImageToSticker(Wilykun, store);
