@@ -1,4 +1,4 @@
-import { delay, jidNormalizedUser } from 'baileys';
+import { delay, jidNormalizedUser, getContentType } from 'baileys';
 import util from 'util';
 import { exec } from 'child_process';
 

@@ -72,6 +72,7 @@ const enableAntiChannelLink = process.env.ENABLE_ANTI_CHANNEL_LINK === 'true';
 const enableAntiGroupLink = process.env.ENABLE_ANTI_GROUP_LINK === 'true';
 const enableOwnerWelcomeMessage = process.env.ENABLE_OWNER_WELCOME_MESSAGE === 'true';
 const ownerWelcomeMessageDelay = parseInt(process.env.OWNER_WELCOME_MESSAGE_DELAY, 10) || 600000;
+const autoStickerMode = process.env.AUTO_STICKER_MODE;
 
 // Jalankan saat panel start jika diaktifkan
 if (process.env.AUTO_CLEAR_SESSION_ENABLED === 'true') {
@@ -157,6 +158,8 @@ const startSock = async () => {
 
 	store.bind(Wilykun.ev);
 	await Client({ Wilykun, store });
+
+
 
 	// login dengan pairing
 	if (!Wilykun.authState.creds.registered) {
@@ -380,7 +383,9 @@ const startSock = async () => {
 		await handleOwnerWelcomeMessage(Wilykun, store, messages);
 	});
 
-	handleImageToSticker(Wilykun, store);
+	if (autoStickerMode !== 'off') {
+		handleImageToSticker(Wilykun, store);
+	}
 
 	if (process.env.HANDLE_ERRORS === 'true') {
 		process.on('uncaughtException', function (err) {
