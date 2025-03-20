@@ -23,10 +23,11 @@ export async function handlePrivateGoodbyeMessage(Wilykun, update) {
                 ppuser = 'https://files.catbox.moe/nuz3yc.jpeg'; // Default image if not available
             }
 
-            const message = `*── 「 GOODBYE 」 ──*\n\n` +
-                            `*Selamat tinggal dari grup ${groupName}, ${participantTag}!*` +
-                            `\n\n*Semoga sukses di masa depan!* 😊\n` +
-                            `────────────────────`;
+            const message = `*── 「 GOODBYE 」 ──*
+*Selamat tinggal, Semoga sukses di masa depan!* 😊
+*Dari grup: ${groupName}*
+*Nama: ${participantTag}*
+────────────────────`;
 
             await Wilykun.sendMessage(participant, {
                 image: { url: ppuser },

@@ -18,7 +18,8 @@ export function getFeatureStatus() {
 		'👋 Welcome Group': process.env.ENABLE_WELCOME_MESSAGE === 'true' ? 'Aktif' : 'Tidak Aktif',
 		'💾 Write Store': process.env.WRITE_STORE === 'true' ? 'Aktif' : 'Tidak Aktif',
 		'📩 Private Welcome Message': process.env.ENABLE_PRIVATE_WELCOME_MESSAGE === 'true' ? 'Aktif' : 'Tidak Aktif',
-		'📨 Private Goodbye Message': process.env.ENABLE_PRIVATE_GOODBYE_MESSAGE === 'true' ? 'Aktif' : 'Tidak Aktif'
+		'📨 Private Goodbye Message': process.env.ENABLE_PRIVATE_GOODBYE_MESSAGE === 'true' ? 'Aktif' : 'Tidak Aktif',
+		'🔄 Auto Restart': process.env.ENABLE_AUTO_RESTART === 'true' ? 'Aktif' : 'Tidak Aktif'
 	};
 
 	const sortedFeatures = Object.keys(features).sort().reduce((acc, key) => {

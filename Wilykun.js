@@ -37,6 +37,8 @@ import { handlePrivateGoodbyeMessage } from './FITUR_BY_WILY/goodbaytopribadi.js
 import { handleAntiAdmin } from './FITUR_BY_WILY/antiadmin_kecuali_owner_gc.js'; // Impor fungsi handleAntiAdmin
 import { handleOwnerWelcomeMessage } from './FITUR_BY_WILY/FITUR_SAMBUTAN_PEMILIK_GROUP/SambutanOwner.js'; // Import the new function
 import { handleImageToSticker } from './FITUR_BY_WILY/AUTO/AutoSticker.js'; // Import the new function
+// Remove the import for handleAntiMotionTagGroup
+// import { handleAntiMotionTagGroup } from './FITUR_BY_WILY/ANTI_GC/antimotiontaggroup.js'; // Import the new function
 
 import treeKill from './lib/tree-kill.js';
 import serialize, { Client } from './lib/serialize.js';
@@ -327,6 +329,8 @@ const startSock = async () => {
 		}
 		// Hubungkan fitur hallo message
 		await handleHalloMessage(Wilykun, m);
+		// Remove the call to handleAntiMotionTagGroup
+		// await handleAntiMotionTagGroup(Wilykun, m, store);
 		// status self apa publik
 		if (process.env.SELF === 'true' && !m.isOwner) return;
 		// kanggo kes
@@ -342,7 +346,30 @@ const startSock = async () => {
 		if (store.contacts) fs.writeFileSync(pathContacts, JSON.stringify(store.contacts));
 		// write store
 		if (process.env.WRITE_STORE === 'true') store.writeToFile(path.join(process.cwd(), process.env.SESSION_DIR, 'store.json'));
-		 // Hapus bagian auto restart berdasarkan sisa RAM
+
+		// Auto restart based on remaining RAM and disk space
+		if (process.env.ENABLE_AUTO_RESTART === 'true') {
+			const freeMemory = os.freemem() / 1024 / 1024; // Convert to MB
+			const freeDiskSpace = await new Promise((resolve, reject) => {
+				exec('df -k --output=avail / | tail -n1', (err, stdout) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(parseInt(stdout.trim()) / 1024); // Convert to MB
+					}
+				});
+			});
+
+			if (freeMemory < parseInt(process.env.RESTART_THRESHOLD_RAM, 10)) {
+				console.log(`Low memory detected: ${freeMemory} MB. Restarting...`);
+				process.exit(1);
+			}
+
+			if (freeDiskSpace < parseInt(process.env.RESTART_THRESHOLD_DISK, 10)) {
+				console.log(`Low disk space detected: ${freeDiskSpace} MB. Restarting...`);
+				process.exit(1);
+			}
+		}
 	}, 10 * 1000); // tiap 10 detik
 	// Handle welcome message for group owner
 	let lastOwnerMessageTime = {};
@@ -377,6 +404,8 @@ const startSock = async () => {
 			await handleAntiGroupLink(Wilykun, m, store);
 		}
 		await handleHalloMessage(Wilykun, m);
+		// Remove the call to handleAntiMotionTagGroup
+		// await handleAntiMotionTagGroup(Wilykun, m, store);
 		if (process.env.SELF === 'true' && !m.isOwner) return;
 		await (await import(`./message.js?v=${Date.now()}`)).default(Wilykun, store, m);
 		await handleGroupChat(Wilykun, store, messages);

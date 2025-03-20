@@ -109,11 +109,17 @@ function resetViolationCount(groupId, user) {
     }
 }
 
+const processedMessages = new Set();
+
 export async function handleAntiWaMeLink(Wilykun, m, store) {
 	if (process.env.ENABLE_ANTI_WAME_LINK === 'true' && m.key.remoteJid.endsWith('@g.us') && (m.message.conversation || m.message.extendedTextMessage?.text) && !m.key.fromMe) {
 		const messageText = m.message.conversation || m.message.extendedTextMessage?.text;
 		const waMeRegex = /wa\.me/i;
 		if (waMeRegex.test(messageText)) {
+			const messageId = m.key.id;
+			if (processedMessages.has(messageId)) return; // Skip if already processed
+			processedMessages.add(messageId);
+
 			const participant = m.key.participant || m.key.remoteJid;
 			const contact = store.contacts[participant] || {};
 			const displayName = contact.notify || contact.vname || contact.name || participant.split('@')[0];
